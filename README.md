@@ -3,6 +3,7 @@ PFS Earthquake Demo
 
 Let's take a look at a demo that we can run on PFS that exercises many of it's features. For this demo, we've built an application that tracks earthquake activity throughout the Unnted States and provides a frontend to visualize the activity. Before we dive down into the code and how to get it setup, let's take a look at each of the components:
 
+![Architecture of our demo](images/architecture.png)
 
 - [**USGS Event Source**](https://github.com/gswk/usgs-event-source) - A custom event source that polls the USGS Earthquake data on a given interval
 - [**Geocoder Service**](https://github.com/BrianMMcClain/geocoder-pfs) - Service that takes in earthquake activity, parses it and does a reverse geocode on the coordinates to find the nearest address
