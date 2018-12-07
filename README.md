@@ -146,3 +146,20 @@ Finally, we have to deploy our frontend. For this, we'll actually deploy it as a
 ```
 kubectl apply -f frontend-service.yaml
 ```
+
+Accessing Our Application
+---
+
+Finally, with everything deployed, we can access our running application. There's a couple options we have, including [setting up a custom domain](https://github.com/knative/docs/blob/master/serving/using-a-custom-domain.md) that we could use to make our application accessable over the internet. For our case though, we'll setup a local DNS entry to resolve the route that PFS gives our application to resolve to the ingress gateway that PFS sets up at install time. While the PFC CLI has a handy "invoke" function that handles crafting a cURL request to our services, for something like a webpage it's easier to just add an entry to our /etc/hosts file. First, let's get the IP address of our ingress gateway:
+
+```
+export INGRESS_IP=`kubectl get svc knative-ingressgateway -n istio-system -o jsonpath="{.status.loadBalancer.ingress[*].ip}"`
+```
+
+We can then add a route to our Geoquake frontend service. By default, the route will be in the formage `{SERVICE NAME}.{NAMESPACE}.example.com`, making our route `geoquake.default.example.com`. With our IP and route, we can append a line to our `hosts` file like so:
+
+```
+echo "$INGRESS_IP geoquake.default.example.com" | sudo tee -a /etc/hosts
+```
+
+All of this complete, we can finally access our application in the browser at [http://geoquake.default.example.com](http://geoquake.default.example.com/)! The first request may take a few seconds to respond as PFS spins down functions that don't receive traffic after awhile, but after that requests should be much quicker.
