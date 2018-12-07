@@ -1,6 +1,18 @@
 PFS Earthquake Demo
 ===
 
+Let's take a look at a demo that we can run on PFS that exercises many of it's features. For this demo, we've built an application that tracks earthquake activity throughout the Unnted States and provides a frontend to visualize the activity. Before we dive down into the code and how to get it setup, let's take a look at each of the components:
+
+
+- [**USGS Event Source**](https://github.com/gswk/usgs-event-source) - A custom event source that polls the USGS Earthquake data on a given interval
+- [**Geocoder Service**](https://github.com/BrianMMcClain/geocoder-pfs) - Service that takes in earthquake activity, parses it and does a reverse geocode on the coordinates to find the nearest address
+- [**Earthquake Events Service**](https://github.com/BrianMMcClain/earthquake-event-pfs) - Service that our frontend will talk to that will return events that have occured in the last 24 hours
+- **Postgres Database** - Database that will back our Geocoder and Events service and persist events over time
+- [**Geoquake Frontend**](https://github.com/BrianMMcClain/geoquake-pfs) - Frontend to visualize and list activity reported from our Events service
+
+
+Each of these components were built to run on our Kubernetes cluster, either as a standalone pod (Postgres), built for vanilla Knative (USGS Event Source, Geoquake Frontend), or built with PFS in mind (Geocoder and Events services). Let's walk through what's required to get this all running.
+
 Install PFS and configure outbound network access
 ---
 Make sure to refer to the [PFS documentation](https://docs.pivotal.io/pfs/) for instructions on how to install PFS on your Kubernetes cluster. 
