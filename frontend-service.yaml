@@ -1,0 +1,15 @@
+apiVersion: serving.knative.dev/v1alpha1
+kind: Service
+metadata:
+  name: geoquake
+  namespace: default
+spec:
+  runLatest:
+    configuration:
+      revisionTemplate:
+        spec:
+          container:
+            image: docker.io/brianmmcclain/geoquake-pfs:latest
+            env:
+            - name: EVENTS_API
+              value: "http://events.default.svc.cluster.local"

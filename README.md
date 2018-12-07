@@ -126,3 +126,23 @@ The event source will take a prebuilt container image which we've already built 
 ```
 kubectl apply -f usgs-event-source.yaml
 ```
+
+Deply Earthquake Event Service
+---
+
+So far we've set up an event source to get the data into our platform, then send the events to our Geocoder services for processing and storage. Before we get to deploying our frontend though, we have one more service to deploy, our Earthquake Event service that the frontend will talk to and respond with all the events in the last 24 hours. Since this service was written for PFS as well, we can deploy it as follows:
+
+```
+pfs function create events --git-repo https://github.com/BrianMMcClain/earthquake-event-pfs.git --image $REGISTRY/$REGISTRY_USER/events --verbose --env "PGHOST=geocodedb-postgresql.default.svc.cluster.local" --env "PGPORT=5432" --env "PGDATABASE=geocode" --env "PGUSER=postgres" --env "PGPASSWORD=devPass"
+```
+
+This is very similar to how we deployed our geocoder service, just omiting the Google API key as it's not needed.
+
+Deploy the Frontend
+---
+
+Finally, we have to deploy our frontend. For this, we'll actually deploy it as a vanilla Knative service. The frontend is served up by a Ruby server. Although we could use [Knative Builds](https://github.com/knative/docs/tree/master/build) to build our code for us like we have with our PFS functions, we've gone ahead and packaged up the container and pushed it to Docker Hub. We can spin this frontend up using the definition in [frontend-service.yaml](frontend-service.yaml). For our specific application, it expects that we provide the route to our Earthquake Event service, which has been provide in the YAML.
+
+```
+kubectl apply -f frontend-service.yaml
+```
